@@ -9,9 +9,9 @@ Ciclo Lectivo 2026 — Hito 0: Pitch
 ## Integrantes
 
 - Daniela Pulin
-- Belén
+- Belén Mansilla
 - Gabriela Nieva
-- Matías
+- Matías Villegas
 
 ## Tema elegido
 
