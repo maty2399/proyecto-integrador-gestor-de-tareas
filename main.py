@@ -12,7 +12,7 @@ def generar_id(cola, finalizadas):
     return max(ids) + 1 if ids else 1
 
 
-def alta_tarea(cola, historial):
+def alta_tarea(cola, historial, finalizadas):
     print("\n--- Alta de tarea ---")
     titulo = input("Título: ")
     prioridad = input("Prioridad: ")
@@ -20,7 +20,7 @@ def alta_tarea(cola, historial):
     categoria = input("Categoría: ")
     responsable = input("Responsable: ")
 
-    id_nuevo = generar_id(cola, [])
+    id_nuevo = generar_id(cola, finalizadas)
     fecha_creacion = datetime.now().strftime("%d%m%Y %H:%M:%S")
 
     tarea = [
@@ -32,18 +32,27 @@ def alta_tarea(cola, historial):
     agregar_tarea(cola, tarea)
     agregar_historial(historial, id_nuevo, "pendiente", fecha_creacion)
     escribir_log(f"Tarea creada ID {id_nuevo}")
+    return True
 
 
 def cambiar_estado(cola, historial, finalizadas):
     print("\n--- Cambiar estado ---")
-    id_buscar = int(input("ID de tarea: "))
+    try:
+        id_buscar = int(input("ID de tarea: ").strip())
+    except ValueError:
+        print("El ID debe ser un número entero.")
+        return False
 
     tarea = next((t for t in cola if t[0] == id_buscar), None)
     if tarea is None:
         print("No existe la tarea.")
-        return
+        return False
 
-    nuevo_estado = input("Nuevo estado: ").lower()
+    nuevo_estado = input("Nuevo estado: ").strip().lower()
+    if nuevo_estado not in {"pendiente", "en curso", "finalizada"}:
+        print("Estado inválido. Use pendiente, en curso o finalizada.")
+        return False
+
     fecha = datetime.now().strftime("%d%m%Y--%H:%M:%S")
 
     tarea[3] = nuevo_estado
@@ -55,10 +64,15 @@ def cambiar_estado(cola, historial, finalizadas):
         eliminar_tarea(cola, tarea)
 
     escribir_log(f"Estado cambiado ID {id_buscar}")
+    return True
 
 
 def menu():
-    cola, historial, finalizadas = cargar_json()
+    try:
+        cola, historial, finalizadas = cargar_json()
+    except ValueError as error:
+        print(error)
+        return
 
     while True:
         print("\n===== Gestor de tareas =====")
@@ -71,9 +85,11 @@ def menu():
         op = input("Opción: ")
 
         if op == "1":
-            alta_tarea(cola, historial)
+            if alta_tarea(cola, historial, finalizadas):
+                guardar_json(cola, historial, finalizadas)
         elif op == "2":
-            cambiar_estado(cola, historial, finalizadas)
+            if cambiar_estado(cola, historial, finalizadas):
+                guardar_json(cola, historial, finalizadas)
         elif op == "3":
             print(listar_cola(cola))
             print(listar_finalizadas(finalizadas))
