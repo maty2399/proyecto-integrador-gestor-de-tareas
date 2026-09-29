@@ -6,6 +6,7 @@ from persistencia.csv_manager import exportar_csv
 from estructuras.cola import agregar_tarea, eliminar_tarea, listar_cola
 from estructuras.finalizadas import agregar_finalizada, listar_finalizadas
 from estructuras.historial import agregar_historial, obtener_historial
+from estadisticas import mostrar_estadisticas
 
 def generar_id(cola, finalizadas):
     ids = [t[0] for t in cola] + [t[0] for t in finalizadas]
@@ -79,8 +80,9 @@ def menu():
         print("1. Alta de tarea")
         print("2. Cambiar estado")
         print("3. Listar tareas")
-        print("4. Exportar CSV")
-        print("5. Salir")
+        print("4. Ver estadísticas")
+        print("5. Exportar CSV")
+        print("6. Salir")
 
         op = input("Opción: ")
 
@@ -95,8 +97,10 @@ def menu():
             print(listar_finalizadas(finalizadas))
             print(obtener_historial(historial))
         elif op == "4":
-            exportar_csv(cola + finalizadas)
+            mostrar_estadisticas(cola, finalizadas)
         elif op == "5":
+            exportar_csv(cola + finalizadas)
+        elif op == "6":
             guardar_json(cola, historial, finalizadas)
             escribir_log("Programa finalizado.")
             break
@@ -106,3 +110,4 @@ def menu():
 
 if __name__ == "__main__":
     menu()
+    
