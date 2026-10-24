@@ -99,7 +99,16 @@ def menu():
         elif op == "4":
             mostrar_estadisticas(cola, finalizadas)
         elif op == "5":
-            exportar_csv(cola + finalizadas)
+            try:
+                ruta_csv = exportar_csv(cola + finalizadas)
+            except PermissionError:
+                print(
+                    "No se pudo actualizar el CSV porque el archivo está "
+                    "abierto o no tienes permisos. Ciérralo en Excel y vuelve "
+                    "a elegir la opción 5."
+                )
+            else:
+                print(f"CSV exportado correctamente en: {ruta_csv}")
         elif op == "6":
             guardar_json(cola, historial, finalizadas)
             escribir_log("Programa finalizado.")

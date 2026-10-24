@@ -2,12 +2,34 @@ import os
 import tempfile
 import unittest
 from contextlib import redirect_stdout
+import csv
 from datetime import datetime
 from io import StringIO
 from unittest.mock import patch
 
 import main
+from persistencia import csv_manager
 from persistencia import json_manager
+
+
+class CsvManagerTests(unittest.TestCase):
+    def test_export_creates_csv_and_returns_its_path(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            csv_path = os.path.join(temp_dir, "datos", "reporte.csv")
+            task = [1, "Tarea", "Alta", "pendiente", "25-10-2026",
+                    "Personal", "Ana", "24/10/2026 14:00:00", None]
+
+            with patch.object(csv_manager, "CSV_FILE", csv_path):
+                with patch.object(csv_manager, "escribir_log"):
+                    result = csv_manager.exportar_csv([task])
+
+            self.assertEqual(result, csv_path)
+            with open(csv_path, newline="", encoding="utf-8-sig") as file:
+                rows = list(csv.reader(file, delimiter=";"))
+
+        self.assertEqual(rows[0][0], "Identificador")
+        self.assertEqual(len(rows[0]), 9)
+        self.assertEqual(rows[1], [str(value) if value is not None else "" for value in task])
 
 
 class JsonManagerTests(unittest.TestCase):
@@ -123,6 +145,20 @@ class TaskManagerTests(unittest.TestCase):
 
         self.assertEqual(save.call_count, 2)
         self.assertEqual(save.call_args_list[0].args[0][0][1], "Tarea")
+
+    def test_menu_explains_when_csv_is_locked(self):
+        answers = ["5", "6"]
+        output = StringIO()
+        with patch.object(main, "cargar_json", return_value=([], [], [])):
+            with patch.object(main, "exportar_csv", side_effect=PermissionError):
+                with patch.object(main, "guardar_json"):
+                    with patch.object(main, "escribir_log"):
+                        with patch("builtins.input", side_effect=answers):
+                            with redirect_stdout(output):
+                                main.menu()
+
+        self.assertIn("Ciérralo en Excel", output.getvalue())
+        self.assertIn("opción 5", output.getvalue())
 
     def test_menu_does_not_save_when_json_cannot_be_loaded(self):
         with patch.object(main, "cargar_json", side_effect=ValueError("JSON inválido")):
