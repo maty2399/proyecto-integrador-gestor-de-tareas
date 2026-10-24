@@ -2,6 +2,7 @@ import os
 import tempfile
 import unittest
 from contextlib import redirect_stdout
+from datetime import datetime
 from io import StringIO
 from unittest.mock import patch
 
@@ -46,6 +47,31 @@ class JsonManagerTests(unittest.TestCase):
 
 
 class TaskManagerTests(unittest.TestCase):
+    def test_task_timestamps_use_consistent_format(self):
+        timestamp = datetime(2026, 10, 24, 14, 0, 0)
+        expected = "24/10/2026 14:00:00"
+        tasks, history, completed = [], [], []
+
+        with patch("main.datetime") as mocked_datetime:
+            mocked_datetime.now.return_value = timestamp
+            with patch("builtins.input", side_effect=[
+                "Tarea", "Media", "25-10-2026", "Personal", "Ana"
+            ]):
+                with patch.object(main, "escribir_log"):
+                    with redirect_stdout(StringIO()):
+                        main.alta_tarea(tasks, history, completed)
+
+            task = tasks[0]
+            with patch("builtins.input", side_effect=["1", "finalizada"]):
+                with patch.object(main, "escribir_log"):
+                    with redirect_stdout(StringIO()):
+                        main.cambiar_estado(tasks, history, completed)
+
+        self.assertEqual(task[7], expected)
+        self.assertEqual(task[8], expected)
+        self.assertEqual(history[0][2], expected)
+        self.assertEqual(history[1][2], expected)
+
     def test_generated_id_accounts_for_completed_tasks(self):
         self.assertEqual(main.generar_id([[2]], [[1], [7]]), 8)
 
@@ -85,7 +111,9 @@ class TaskManagerTests(unittest.TestCase):
 
     def test_menu_saves_after_adding_task(self):
         tasks, history, completed = [], [], []
-        answers = ["1", "Tarea", "Media", "01-01-2027", "Personal", "Ana", "5"]
+        answers = [
+            "1", "Tarea", "Media", "01-01-2027", "Personal", "Ana", "5", "6"
+        ]
         with patch.object(main, "cargar_json", return_value=(tasks, history, completed)):
             with patch.object(main, "guardar_json") as save:
                 with patch.object(main, "escribir_log"):

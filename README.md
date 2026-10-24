@@ -45,17 +45,40 @@ A modo de investigación, se incursionará en dar una salida visual front end.
 
 6. Estructura de Archivos del Proyecto
 
-   El código se encuentra modularizado separando responsabilidades:
+   El código se encuentra modularizado separando responsabilidades por archivo:
 
-   * main.py: Punto de entrada, menú principal y orquestación de flujos.
+   ```text
+   proyecto-integrador-gestor-de-tareas/
+   ├── datos/
+   │   ├── log.txt
+   │   ├── reporte.csv
+   │   └── tareas.json
+   ├── estructuras/
+   │   ├── cola.py
+   │   ├── finalizadas.py
+   │   └── historial.py
+   ├── persistencia/
+   │   ├── csv_manager.py
+   │   ├── json_manager.py
+   │   └── log_manager.py
+   ├── tests/
+   │   ├── __init__.py
+   │   └── test_gestor.py
+   ├── estadisticas.py
+   ├── main.py
+   ├── utils.py
+   ├── PITCH.md
+   ├── PROMPTS.md
+   └── README.md
+   ```
 
-   * estructuras.py: Definición de constructores y estructuras de datos (listas de diccionarios).
-
-   * persistencia.py: Lógica de lectura y escritura de archivos (JSON, CSV y logs en TXT).
-
-   * utils.py: Funciones auxiliares de validación, búsqueda y ordenamiento.
-
-   * estadisticas.py: Cálculo de métricas y reportes del sistema.
+   * `main.py`: punto de entrada, menú y coordinación de las operaciones. Las fechas de creación, cambios de estado y finalización usan el formato `DD/MM/YYYY HH:MM:SS`.
+   * `estructuras/cola.py`, `estructuras/finalizadas.py` y `estructuras/historial.py`: operaciones sobre las tareas activas, las finalizadas y el historial de estados.
+   * `persistencia/json_manager.py`, `persistencia/csv_manager.py` y `persistencia/log_manager.py`: carga y guardado JSON, exportación CSV y registro de logs TXT.
+   * `estadisticas.py`: cálculo y presentación de estadísticas.
+   * `utils.py`: funciones auxiliares.
+   * `tests/test_gestor.py`: pruebas unitarias de las operaciones y de la persistencia.
+   * `datos/`: archivos de datos generados o utilizados por la aplicación.
 
 7. Bibliotecas Utilizadas
 

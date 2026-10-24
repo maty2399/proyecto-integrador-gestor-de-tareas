@@ -39,11 +39,18 @@ sin fechas internas adicionales:
 | Fecha | Hito / Actividad |
 |---|---|
 | 15 Sep | **Hito 0** — Pitch (este documento) + repositorio creado |
-| 22–29 Sep | Desarrollo: `main.py` con menú, `persistencia.py` con JSON, primera funcionalidad operativa |
+| 22–29 Sep | Desarrollo: `main.py` con menú, `persistencia/json_manager.py` con JSON, primera funcionalidad operativa |
 | 6 Oct | **Hito 1** — v1.0: menú funcional + persistencia base + 1 funcionalidad completa |
 | 13 Oct | Recuperación (si corresponde) / feedback avanzado, CSV, TXT y testing |
 | 20 Oct | Refactorización, grabación de video, README y PROMPTS.md |
 | 27 Oct | **Hito 2 Final** — entrega completa + defensa oral |
+
+## Organización actual del código
+
+El proyecto separa las operaciones de tareas e historial en `estructuras/`
+(`cola.py`, `finalizadas.py` e `historial.py`) y las operaciones de archivos en
+`persistencia/` (`json_manager.py`, `csv_manager.py` y `log_manager.py`).
+`main.py` coordina el menú y `estadisticas.py` calcula las métricas.
 
 ## Repositorio
 

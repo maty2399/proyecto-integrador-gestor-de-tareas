@@ -22,7 +22,7 @@ def alta_tarea(cola, historial, finalizadas):
     responsable = input("Responsable: ")
 
     id_nuevo = generar_id(cola, finalizadas)
-    fecha_creacion = datetime.now().strftime("%d%m%Y %H:%M:%S")
+    fecha_creacion = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     tarea = [
         id_nuevo, titulo, prioridad, "pendiente",
@@ -54,7 +54,7 @@ def cambiar_estado(cola, historial, finalizadas):
         print("Estado inválido. Use pendiente, en curso o finalizada.")
         return False
 
-    fecha = datetime.now().strftime("%d%m%Y--%H:%M:%S")
+    fecha = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     tarea[3] = nuevo_estado
     agregar_historial(historial, id_buscar, nuevo_estado, fecha)

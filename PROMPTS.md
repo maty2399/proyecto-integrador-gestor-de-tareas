@@ -19,6 +19,9 @@ Las herramientas de IA se emplearon exclusivamente bajo los siguientes criterios
   > *"¿Cómo puedo organizar mi codigo para que se vea separado, de forma ordenada y facil de comprender?"*
 * **Respuesta / Sugerencia de la IA:** 
   Se sugirió separar el desarrollo en módulos, carpetas y archivos independientes (`main.py`, `persistencia.py`, `utils.py`, etc.) para que el código quede limpio, modular y fácil de mantener.
+  La estructura final se organizó en las carpetas `estructuras/` (`cola.py`,
+  `finalizadas.py` e `historial.py`) y `persistencia/` (`json_manager.py`,
+  `csv_manager.py` y `log_manager.py`), coordinadas desde `main.py`.
 
 ### Scrum Master - Code Review y Detección de Riesgos
 * **Consulta:** 
